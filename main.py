@@ -1,6 +1,7 @@
 # import the opencv library
 import cv2
 
+
 def main():
     # define a video capture object
     vid = cv2.VideoCapture(0)
@@ -23,6 +24,7 @@ def main():
     vid.release()
     # Destroy all the windows
     cv2.destroyAllWindows()
+
 
 if __name__ == '__main__':
     main()
