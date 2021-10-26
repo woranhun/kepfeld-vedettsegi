@@ -69,13 +69,13 @@ class Server(object):
             self.message_listener(websocket, path, message)
 
     async def __start_websocket(self):
-        async with websockets.serve(self.__on_connect, "192.168.1.139", WEBSOCKET_PORT):
+        async with websockets.serve(self.__on_connect, "", WEBSOCKET_PORT):
             self.__stop = Future()
             await self.__stop
 
     def start(self):
         print(f"Started server on port {self.port}")
-        http_server = HTTPServer(("192.168.1.139", self.port), HTTPHandler)
+        http_server = HTTPServer(("", self.port), HTTPHandler)
         threading.Thread(target=http_server.serve_forever).start()
 
         print(f"Hosting websocket endpoint on port {WEBSOCKET_PORT}")
