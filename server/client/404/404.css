@@ -1,0 +1,27 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+h1 {
+    font-family: "Righteous", sans-serif;
+    font-size: 64px;
+    margin-top: -20%;
+    margin-bottom: 0.25em;
+}
+
+h2 {
+    margin-bottom: 0.25em;
+}
+
+* {
+    font-family: Roboto, sans-serif;
+}
