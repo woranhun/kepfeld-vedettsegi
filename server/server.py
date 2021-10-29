@@ -1,7 +1,7 @@
 import asyncio
 import socketserver
-from asyncio import Future
 import threading
+from asyncio import Future
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from typing import Optional, Callable
 
@@ -79,7 +79,6 @@ class Server(object):
         threading.Thread(target=http_server.serve_forever).start()
 
         print(f"Hosting websocket endpoint on port {WEBSOCKET_PORT}")
-
         asyncio.run(self.__start_websocket())
 
     def stop(self):

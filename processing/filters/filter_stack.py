@@ -24,7 +24,7 @@ class FilterStack(Filter):
         pixels = Pixels.from_image(image)
         return self.apply(pixels)
 
-    def apply(self, pixels: Pixels) -> Pixels:
+    def apply(self, pixels: Pixels):
         for next_filter in self.stack:
             pixels = next_filter.apply(pixels)
 

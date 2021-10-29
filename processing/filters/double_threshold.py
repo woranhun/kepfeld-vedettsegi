@@ -9,7 +9,7 @@ class DoubleThreshold(PixelFilter):
         self.lower = lower
         self.upper = upper
 
-    def apply_pixel(self, pixels: Pixels, x: int, y: int) -> Pixel:
+    def apply_pixel(self, pixels: Pixels, x: int, y: int):
         pixel = pixels[x, y]
         if pixel.r < self.lower:
             return Pixel(0, 0, 0)

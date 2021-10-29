@@ -23,7 +23,7 @@ class Sobel(PixelFilter):
             [-1, -2, -1]
         ])
 
-    def apply_pixel(self, pixels: Pixels, x: int, y: int) -> Pixel:
+    def apply_pixel(self, pixels: Pixels, x: int, y: int):
         horizontal = convolve_grayscale(pixels, Point(x, y), self.matrix_horizontal)
         vertical = convolve_grayscale(pixels, Point(x, y), self.matrix_vertical)
         length = math.hypot(horizontal, vertical)

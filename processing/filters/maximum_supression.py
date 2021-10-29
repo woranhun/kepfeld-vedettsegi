@@ -14,7 +14,7 @@ OFFSETS = (
 
 class MaximumSuppression(PixelFilter):
 
-    def apply_pixel(self, pixels: Pixels, x: int, y: int) -> Pixel:
+    def apply_pixel(self, pixels: Pixels, x: int, y: int):
         pixel = pixels[x, y]
         length = pixel.r
         angle = pixel.g

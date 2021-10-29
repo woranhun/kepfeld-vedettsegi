@@ -11,7 +11,7 @@ socket.addEventListener("open", () => {
 });
 
 socket.addEventListener("close", () => {
-    alert("Closed");
+    alert("Socket closed, please reload the page");
 });
 
 let state = States.VACCINE_CERTIFICATE;

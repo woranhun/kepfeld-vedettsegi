@@ -15,7 +15,7 @@ class Gaussian1D(PixelFilter):
         self.radius = radius
         self.kernel = kernel
 
-    def apply_pixel(self, pixels: Pixels, x: int, y: int) -> Pixel:
+    def apply_pixel(self, pixels: Pixels, x: int, y: int):
         return convolve_rgb(pixels, Point(x, y), self.kernel)
 
 

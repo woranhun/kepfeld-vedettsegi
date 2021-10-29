@@ -29,7 +29,11 @@ videoContainer.addEventListener("playing", () => {
 });
 
 function draw() {
+    ctx.save();
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
     ctx.drawImage(videoContainer, 0, 0);
+    ctx.restore();
     if (counterStartTime !== null) {
         const diff = (Date.now() - counterStartTime) / 1000;
         const timeLeft = COUNTER_LENGTH - diff;
@@ -48,7 +52,12 @@ function draw() {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         } else {
             counterStartTime = null;
-            submitImage(canvas.toDataURL());
+            const offscreenCanvas = document.createElement("canvas");
+            offscreenCanvas.width = canvas.width;
+            offscreenCanvas.height = canvas.height;
+            const offscreenCtx = offscreenCanvas.getContext("2d");
+            offscreenCtx.drawImage(videoContainer, 0, 0);
+            submitImage(offscreenCanvas.toDataURL());
         }
     }
     requestAnimationFrame(draw);
