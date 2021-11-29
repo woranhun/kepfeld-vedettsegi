@@ -4,6 +4,8 @@ import cv2
 import imutils
 import numpy as np
 # import qrReservedMask
+from PIL import Image
+from pyzbar.pyzbar import decode
 from scipy import stats
 
 
@@ -11,11 +13,12 @@ class QR:
     img = None
     corners = []
 
-    def __init__(self, path: os.path = os.path.join("qr-reader", "test.jpg")):
+    def __init__(self, path: os.path = os.path.join("qr-reader", "img.png")):
         self.img = cv2.imread(path)
 
     def main(self):
-        scale_percent = 15  # percent of original size
+        # scale_percent = 15  # percent of original size
+        scale_percent = 100  # percent of original size
         width = int(self.img.shape[1] * scale_percent / 100)
         height = int(self.img.shape[0] * scale_percent / 100)
         dim = (width, height)
@@ -38,7 +41,8 @@ class QR:
             M = cv2.moments(contour)
 
             area = cv2.contourArea(contour)
-            if area < 1000 or area > 2500:
+            # if area < 1000 or area > 2500:
+            if area < 100 or area > 700:
                 continue
 
             if M['m00'] != 0:
@@ -52,6 +56,7 @@ class QR:
 
         print(self.corners)
 
+        cv2.waitKey(0)
         cv2.line(dst, self.corners[0], self.corners[2], (255, 255, 0), 1)
         cv2.line(dst, self.corners[2], self.corners[1], (255, 255, 0), 1)
 
@@ -70,7 +75,7 @@ class QR:
         resized = cv2.resize(closing, [456, 456], interpolation=cv2.INTER_NEAREST)
 
         rawData = np.zeros((57, 57))
-        resized = np.zeros((456, 456))
+        # resized = np.zeros((456, 456))
         for i in range(57):
             for j in range(57):
                 yCrop = [j * 8 + 1, j * 8 + 7]
@@ -87,12 +92,9 @@ class QR:
                 row = j
                 column = i
                 # rawData[i][j] = 1 - (int(stats.mode(node, axis=None)[0] / 255))
-                # if (((i * j) % 3) + ((i + j) % 2)) % 2 == 0:
-                #     rawData[i][j] = (int(stats.mode(node, axis=None)[0] / 255))
-                # else:
-                #     rawData[i][j] = 1 - (int(stats.mode(node, axis=None)[0] / 255))
 
-                if (int(stats.mode(node, axis=None)[0] / 255)) == (((column * row) % 3) + ((column + row) % 2)) % 2:
+                # # if (int(stats.mode(node, axis=None)[0] / 255)) == (((column * row) % 3) + ((column + row) % 2)) % 2:
+                if (int(stats.mode(node, axis=None)[0] / 255)) == ((i * j) % 2 + (i * j) % 3) % 2:
                     rawData[i][j] = 0
                 else:
                     rawData[i][j] = 1
@@ -111,9 +113,9 @@ class QR:
         column = 56
         row = 56
         isGoingUp = True
-        outData = []
+        rawread = []
         for i in range(57):
-            outData.append(int(rawData[row][column]))
+            rawread.append(int(rawData[row][column]))
             if column % 2 == 1:
                 if isGoingUp:
                     row -= 1
@@ -125,22 +127,29 @@ class QR:
 
             # cv2.line(dst, corners[2], corners[1], (255, 255, 0), 1)
 
-        dataType = "".join([str(i) for i in outData[0:4]])
+        dataType = "".join([str(i) for i in rawread[0:4]])
         print("Data Type: " + dataType)
 
-        bytesOut = "".join([str(i) for i in outData[4:20]])
+        bytesOut = "".join([str(i) for i in rawread[4:20]])
         print("Data Length: " + str(int(bytesOut, 2)))
 
         dataOut = ""
-        for i in range(15, 57):
-            dataOut += str(outData[i])
+        for i in range(20, 57):
+            dataOut += str(rawread[i])
             if len(dataOut) == 8:
                 print(chr(int(dataOut, 2)))
                 dataOut = ""
 
-        print(outData)
+        ou = "".join([str(i) for i in rawread[20:]])
+        ou = "0b" + ou
+        ou = int(ou, 2)
+        print(rawread[20:])
+        print((rawread[:8]))
+        print(bin(bytearray("h", "ISO-8859-1")[0]))
+        print(bin(bytearray("a", "ISO-8859-1")[0]))
+        print(ou.to_bytes((ou.bit_length() + 7) // 8, 'big').decode('ISO-8859-1'))
 
-        print(16 % 7)
+        print(decode(Image.open("./qr-reader/img.png")))
         # cv2.imshow('Black white image', closing)
         cv2.imshow('Cropped', resized)
 
