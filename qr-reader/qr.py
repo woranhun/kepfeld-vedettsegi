@@ -70,34 +70,42 @@ class QR:
         resized = cv2.resize(closing, [456, 456], interpolation=cv2.INTER_NEAREST)
 
         rawData = np.zeros((57, 57))
+        resized = np.zeros((456, 456))
         for i in range(57):
             for j in range(57):
                 yCrop = [j * 8 + 1, j * 8 + 7]
                 xCrop = [i * 8 + 1, i * 8 + 7]
                 node = resized[xCrop[0]:xCrop[1], yCrop[0]:yCrop[1]]
 
-                # if (i%3  + j%2)%2 == 0:
                 # if (j)%3 == 0:
                 # if (i+j)%2 == 0:
                 # if (i)%2 == 0:
                 # if (i+j)%3 == 0:
-                # if (i/2+j/3)%2 == 0:
+                # if (i // 2 + j // 3) % 2 == 0:
                 # if (i*j)%2 + (i*j)%3 == 0:
                 # if ((i*j)%2 + (i*j)%3)%2 == 0:
                 row = j
                 column = i
                 # rawData[i][j] = 1 - (int(stats.mode(node, axis=None)[0] / 255))
-                if (((column * row) % 3) + ((column * row) % 2)) == 0:
-                    rawData[i][j] = (int(stats.mode(node, axis=None)[0] / 255))
+                # if (((i * j) % 3) + ((i + j) % 2)) % 2 == 0:
+                #     rawData[i][j] = (int(stats.mode(node, axis=None)[0] / 255))
+                # else:
+                #     rawData[i][j] = 1 - (int(stats.mode(node, axis=None)[0] / 255))
+
+                if (int(stats.mode(node, axis=None)[0] / 255)) == (((column * row) % 3) + ((column + row) % 2)) % 2:
+                    rawData[i][j] = 0
                 else:
-                    rawData[i][j] = 1 - (int(stats.mode(node, axis=None)[0] / 255))
+                    rawData[i][j] = 1
+
+                # rawData[i][j] ^= (((i * j) % 3) + ((i + j) % 2)) % 2
 
         # a format data nincs rendesen maszkolva
         print(rawData)
         self.img = np.array(rawData * 255).astype('uint8')
         threshed = cv2.cvtColor(self.img, cv2.COLOR_GRAY2BGR)
         # cv2.imshow("asd",threshed)
-        # cv2.imwrite("detected.png", threshed)
+        cv2.imwrite(os.path.join("qr-reader", "detected.png"), threshed)
+        tmp = threshed
         # print([rawData[56][56], rawData[55][56], rawData[56][55], rawData[55][55]])
         # print([rawData[56][54], rawData[55][54], rawData[56][53], rawData[55][53]])
         column = 56
@@ -117,14 +125,10 @@ class QR:
 
             # cv2.line(dst, corners[2], corners[1], (255, 255, 0), 1)
 
-        dataType = ""
-        for i in range(4):
-            dataType += str(outData[i])
+        dataType = "".join([str(i) for i in outData[0:4]])
         print("Data Type: " + dataType)
-        bytesOut = ""
-        for i in range(4, 15):
-            bytesOut += str(outData[i])
-        print(bytesOut)
+
+        bytesOut = "".join([str(i) for i in outData[4:20]])
         print("Data Length: " + str(int(bytesOut, 2)))
 
         dataOut = ""
