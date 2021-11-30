@@ -267,42 +267,30 @@ class QR:
             # cv2.line(dst, corners[2], corners[1], (255, 255, 0), 1)
 
 
-        print("Data Length (bits): ", len(outData))
-        dataType = "".join([str(i) for i in outData[0:4]])
-        print("Data Type: " + dataType)
-
-        bytesOut = "".join([str(i) for i in outData[4:12]])
-        numCharacters = int(bytesOut, 2)
-        print("Number of characters : " + str(numCharacters))
+        
 
         dataOut = ""
         stringOut = ""
         #itt kell 0-tól menni és úgy megy az RS decode
-        for i in range(12, len(outData)):
+        for i in range(0, len(outData)):
+            
             dataOut += str(outData[i])
+            
             if len(dataOut) == 8:
                 stringOut += chr(int(dataOut, 2))
                 dataOut = ""
 
         #print(outData[128::])
+        s = list(stringOut)
+        s[0] = "a"
+        stringOut = "".join(s)
         original = stringOut.encode('iso-8859-1')
-        
-        print(stringOut)
-
-        #noPadding = original[:numCharacters] + original[19:]
-        #print(len(original[19:]))
-        #print(len(original))
-        #print(noPadding)
 
         from reedsolo import RSCodec
         rsc = RSCodec(7)  # 10 ecc symbols
         decodedData = rsc.decode( bytearray(original))[0]
 
-
-        
-        dec = decodedData.decode('iso-8859-1')
-        #print(dec)
-        dec = str.encode(dec)
+        dec = decodedData
 
         bytes_as_bits = ''.join(format(byte, '08b') for byte in dec)
         
@@ -310,20 +298,26 @@ class QR:
         integer_map = map(int, bytes_as_bits)
         bytes_as_bits_lst = list(integer_map)
 
-        #print(bytes_as_bits_lst)
-        #print(outData)
-
         dataOut = ""
         stringOut = ""
-        for i in range(12, len(bytes_as_bits)):
-            dataOut += str(bytes_as_bits[i])
+        for i in range(12, len(bytes_as_bits_lst)):
+            dataOut += str(bytes_as_bits_lst[i])
             if len(dataOut) == 8:
                 stringOut += chr(int(dataOut, 2))
                 dataOut = ""
 
         original = stringOut.encode('iso-8859-1')
-        
-        #print(stringOut)
+                
+        print("Data Length (bits): ", len(bytes_as_bits_lst))
+        dataType = "".join([str(i) for i in bytes_as_bits_lst[0:4]])
+        print("Data Type: " + dataType)
+
+        bytesOut = "".join([str(i) for i in bytes_as_bits_lst[4:12]])
+        numCharacters = int(bytesOut, 2)
+        print("Number of characters : " + str(numCharacters))
+
+
+        print(original[:numCharacters])
 
         
    
