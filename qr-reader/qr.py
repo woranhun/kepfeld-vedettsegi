@@ -11,7 +11,8 @@ class QR:
     img = None
     corners = []
 
-    def __init__(self, path: os.path = os.path.join("qr-reader", "test.jpg")):
+    def __init__(self, path: os.path = os.path.join(".", "test.jpg")):
+        path = "c:\\FCKONEDRIVE\\kepfeld-vedettsegi\\qr-reader\\test.jpg"
         self.img = cv2.imread(path)
 
     def main(self):
@@ -70,32 +71,32 @@ class QR:
         resized = cv2.resize(closing, [456, 456], interpolation=cv2.INTER_NEAREST)
 
         rawData = np.zeros((57, 57))
-        resized = np.zeros((456, 456))
+        #resized = np.zeros((456, 456))
         for i in range(57):
             for j in range(57):
                 yCrop = [j * 8 + 1, j * 8 + 7]
                 xCrop = [i * 8 + 1, i * 8 + 7]
                 node = resized[xCrop[0]:xCrop[1], yCrop[0]:yCrop[1]]
 
-                # if (j)%3 == 0:
+                #if (j)%3 == 0:
                 # if (i+j)%2 == 0:
                 # if (i)%2 == 0:
                 # if (i+j)%3 == 0:
                 # if (i // 2 + j // 3) % 2 == 0:
-                # if (i*j)%2 + (i*j)%3 == 0:
+                ##if (i*j)%2 + (i*j)%3 == 0:
                 # if ((i*j)%2 + (i*j)%3)%2 == 0:
-                row = j
-                column = i
-                # rawData[i][j] = 1 - (int(stats.mode(node, axis=None)[0] / 255))
-                # if (((i * j) % 3) + ((i + j) % 2)) % 2 == 0:
-                #     rawData[i][j] = (int(stats.mode(node, axis=None)[0] / 255))
-                # else:
-                #     rawData[i][j] = 1 - (int(stats.mode(node, axis=None)[0] / 255))
-
-                if (int(stats.mode(node, axis=None)[0] / 255)) == (((column * row) % 3) + ((column + row) % 2)) % 2:
-                    rawData[i][j] = 0
+                #row = j
+                #column = i
+                #rawData[i][j] = 1 - (int(stats.mode(node, axis=None)[0] / 255))
+                if (((i * j) % 3) + ((i + j) % 2)) % 2 == 0:
+                    rawData[i][j] = (int(stats.mode(node, axis=None)[0] / 255))
                 else:
-                    rawData[i][j] = 1
+                    rawData[i][j] = 1 - (int(stats.mode(node, axis=None)[0] / 255))
+
+                #if (int(stats.mode(node, axis=None)[0] / 255)) == (((column * row) % 3) + ((column + row) % 2)) % 2:
+                #    rawData[i][j] = 0
+                #else:
+                #    rawData[i][j] = 1
 
                 # rawData[i][j] ^= (((i * j) % 3) + ((i + j) % 2)) % 2
 
@@ -132,15 +133,14 @@ class QR:
         print("Data Length: " + str(int(bytesOut, 2)))
 
         dataOut = ""
-        for i in range(15, 57):
+        for i in range(20, 57):
             dataOut += str(outData[i])
             if len(dataOut) == 8:
                 print(chr(int(dataOut, 2)))
                 dataOut = ""
 
         print(outData)
-
-        print(16 % 7)
+        print(outData[20::])
         # cv2.imshow('Black white image', closing)
         cv2.imshow('Cropped', resized)
 
