@@ -1,17 +1,17 @@
 import math
 
 from common.matrix import Matrix
-from common.pixel import Pixel
 from common.point import Point
 from processing.filters.convolve import convolve_rgb
-from processing.filters.filter import Pixels
 from processing.filters.filter_stack import FilterStack
 from processing.filters.pixel_filter import PixelFilter
+from processing.pixels import Pixels
 
 
 class Gaussian1D(PixelFilter):
 
     def __init__(self, radius: int, kernel: Matrix):
+        super().__init__()
         self.radius = radius
         self.kernel = kernel
 

@@ -1,4 +1,4 @@
-import {sendMessage, submitImage} from "./websocket.js";
+import {submitImage} from "./websocket.js";
 
 const videoContainer = document.createElement("video");
 videoContainer.autoplay = true;

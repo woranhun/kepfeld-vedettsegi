@@ -1,7 +1,7 @@
 from common.matrix import Matrix
 from common.pixel import Pixel
 from common.point import Point
-from processing.filters.filter import Pixels
+from processing.pixels import Pixels
 
 
 def convolve_grayscale(pixels: Pixels, point: Point, matrix: Matrix):

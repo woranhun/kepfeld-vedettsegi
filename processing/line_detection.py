@@ -6,27 +6,24 @@ from PIL import Image
 from common.line import Line
 from common.point import Point
 from common.vector import Vector
-from processing.filters.double_threshold import DoubleThreshold
 from processing.filters.filter_stack import FilterStack
 from processing.filters.gaussian import Gaussian
 from processing.filters.grayscale import Grayscale
-from processing.filters.hough_transform import HoughTransform
-from processing.filters.hysteresis import Hysteresis
-from processing.filters.maximum_supression import MaximumSuppression
-from processing.filters.show import Show
-from processing.filters.sobel import Sobel
+from processing.filters.line_detection.double_threshold import DoubleThreshold
+from processing.filters.line_detection.hough_transform import HoughTransform
+from processing.filters.line_detection.hysteresis import Hysteresis
+from processing.filters.line_detection.maximum_supression import MaximumSuppression
+from processing.filters.line_detection.sobel import Sobel
 
 ANGLE_STEPS = 360
 MIN_PARAMETER_DISTANCE = 20
 
 LINE_DETECTION_STACK = FilterStack() \
-        .then(Show()) \
         .then(Grayscale()) \
-        .then(Show()) \
-        .then(Gaussian(1, 1)) \
-        .then(Sobel()).then(Show()) \
+        .then(Gaussian(2, 1)) \
+        .then(Sobel()) \
         .then(MaximumSuppression()) \
-        .then(DoubleThreshold(25, 180)) \
+        .then(DoubleThreshold(25, 50)) \
         .then(Hysteresis()) \
         .then(HoughTransform(ANGLE_STEPS))
 
@@ -64,7 +61,6 @@ def detect_lines(image: Image, max_count: int):
     for location in found_locations:
         angle = location.y / pixels.height * math.pi
         ro = location.x * 2 - pixels.width
-        print(f"{angle=}, {ro=}, {location.x=}, {location.y=}")
         point = Vector(
             -math.sin(angle) * ro,
             math.cos(angle) * ro
@@ -73,6 +69,7 @@ def detect_lines(image: Image, max_count: int):
             math.cos(angle),
             math.sin(angle)
         )
-        lines.append(Line(point, direction))
+
+        lines.append(Line.from_point_and_direction(point, direction))
 
     return lines

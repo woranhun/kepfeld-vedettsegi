@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from PIL import Image
 
-from processing.filters.filter import Filter, Pixels
+from processing.filters.filter import Filter
+from processing.pixels import Pixels
 
 
 class FilterStack(Filter):

@@ -3,6 +3,10 @@ from __future__ import annotations
 
 class Pixel(object):
 
+    @staticmethod
+    def lerp(p1: Pixel, p2: Pixel, mix: float):
+        return p1 * (1 - mix) + p2 * mix
+
     def __init__(self, r: float, g: float, b: float):
         self.r = r
         self.g = g
@@ -53,7 +57,7 @@ class Pixel(object):
         self.b *= other
         return self
 
-    def __div__(self, other: float):
+    def __truediv__(self, other: float):
         return Pixel(self.r / other, self.g / other, self.b / other)
 
     def __idiv__(self, other: float):

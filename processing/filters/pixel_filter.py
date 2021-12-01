@@ -1,17 +1,24 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from common.pixel import Pixel
-from processing.filters.filter import Filter, Pixels
+from common.types import Size
+from processing.filters.filter import Filter
+from processing.pixels import Pixels
 
 
 class PixelFilter(Filter, ABC):
 
+    def __init__(self, result_size: Optional[Size] = None):
+        self.result_size = result_size
+
     def apply(self, pixels: Pixels):
-        temp_pixels = Pixels(pixels.size)
-        for x in range(pixels.width):
-            for y in range(pixels.height):
+        size = self.result_size or pixels.size
+        temp_pixels = Pixels(size)
+        for x in range(size[0]):
+            for y in range(size[1]):
                 temp_pixels[x, y] = self.apply_pixel(pixels, x, y)
         return temp_pixels
 

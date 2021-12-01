@@ -1,14 +1,11 @@
 import asyncio
 import base64
-import colorsys
 import io
 from enum import Enum
 from typing import Optional
 
 from PIL import Image
 
-from common.line import Line
-from common.vector import Vector
 from debug_tools import draw_line_on_image
 from processing.line_detection import detect_lines
 from server.server import Server
