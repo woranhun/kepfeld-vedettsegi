@@ -162,8 +162,8 @@ class QR:
                 lambda i,j : (((i * j) % 3) + ((i + j) % 2)) % 2 == 0]
 
 
-        for i in range(0,QR_SIZE-1):
-            for j in range(0,QR_SIZE-1):
+        for i in range(0,QR_SIZE):
+            for j in range(0,QR_SIZE):
                 yCrop = [j * 9 + 2, j * 9 + 6]
                 xCrop = [i * 9 + 2, i * 9 + 6]
                 node = resized[xCrop[0]:xCrop[1], yCrop[0]:yCrop[1]]

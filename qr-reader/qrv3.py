@@ -14,7 +14,7 @@ class QR:
     corners = []
 
     def __init__(self):
-        path = "c:\\FCKONEDRIVE\\kepfeld-vedettsegi\\qr-reader\\vedettsegi_clean.png"
+        path = "c:\\FCKONEDRIVE\\kepfeld-vedettsegi\\qr-reader\\test_photo.png"
         self.img = cv2.imread(path)
 
     def main(self):
@@ -31,77 +31,44 @@ class QR:
         # resize image
         # resized = cv2.resize(self.img, dim, interpolation=cv2.INTER_AREA)
 
-        grayImage = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-        (thresh, blackAndWhiteImage) = cv2.threshold(grayImage, 127, 255, cv2.THRESH_BINARY)
-
-        dst = cv2.Laplacian(blackAndWhiteImage, cv2.CV_8U, ksize=1)
-
-        contours = cv2.findContours(dst.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        contours = imutils.grab_contours(contours)
-
-        for contour in contours:
-            # compute the center of the contour
-            M = cv2.moments(contour)
-
-            area = cv2.contourArea(contour)
-            #print(area)
-            #depends on the image a lot
-            #corners has to have 3 items in it (the alignment patterns)
-            if area < 300 or area > 600:
-                continue
-            
-            if M['m00'] != 0:
-                cx = int(M['m10'] / M['m00'])
-                cy = int(M['m01'] / M['m00'])
-                self.corners.append([cx, cy])
-                cv2.drawContours(dst, [contour], -1, (0, 255, 0), 2)
-                cv2.circle(dst, (cx, cy), 7, (0, 0, 255), -1)
-                cv2.putText(dst, "center", (cx - 20, cy - 20),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
-
-        #print(self.corners)
-        cv2.line(dst, self.corners[0], self.corners[2], (255, 255, 0), 1)
-        cv2.line(dst, self.corners[2], self.corners[1], (255, 255, 0), 1)
-
-        #see if corners are detected correctly
-        #cv2.imshow("asd", dst)
-
-        QRWidth = self.corners[0][1] - self.corners[2][1]
-        QRWidth2 = self.corners[2][0] - self.corners[1][0]
-        #print(QRWidth, " " ,QRWidth2)
-
-        nodeWidth = QRWidth / (QR_SIZE-9)
-
-        ratioTo9 = (9/nodeWidth)
-
-        #ratioTo8 *= ratioTo8*1.001
-        #print(nodeWidth)
-        scale_percent = 100 * ratioTo9  # percent of original size
-        width = int(blackAndWhiteImage.shape[1] * scale_percent / 100)
-        height = int(blackAndWhiteImage.shape[0] * scale_percent / 100)
+        scale_percent = 100  # percent of original size
+        width = int(self.img.shape[1] * scale_percent / 100)
+        height = int(self.img.shape[0] * scale_percent / 100)
         dim = (width, height)
 
+        # print(qrReservedMask.qrReserved)
+
         # resize image
-        resized2 = cv2.resize(blackAndWhiteImage, dim, interpolation=cv2.INTER_NEAREST)
+        resized = cv2.resize(self.img, dim, interpolation=cv2.INTER_AREA)
 
-        #cv2.imshow("res2",resized2)
+        grayImage = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+        (thresh, blackAndWhiteImage) = cv2.threshold(grayImage, 127, 255, cv2.THRESH_BINARY)
 
-        dst = cv2.Laplacian(resized2, cv2.CV_8U, ksize=1)
+        # Creating kernel
+
+        kernel = np.ones((2, 2), np.uint8)
+        
+        # Using cv2.erode() method 
+        blackAndWhiteImage = cv2.bitwise_not(cv2.erode(cv2.bitwise_not(blackAndWhiteImage), kernel))
+
+        cv2.imshow("bw", blackAndWhiteImage)
+        cv2.waitKey(0)
+
+        dst = cv2.Laplacian(blackAndWhiteImage, cv2.CV_8U, ksize=3)
 
         contours = cv2.findContours(dst.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         contours = imutils.grab_contours(contours)
-        self.corners = []
+
         for contour in contours:
             # compute the center of the contour
             M = cv2.moments(contour)
-            #print(area)
+
             area = cv2.contourArea(contour)
-            #
-            #depends on the image a lot
-            #corners has to have 3 items in it (the alignment patterns)
-            if area < 2000 or area > 6000:
+            print(area)
+
+            if area < 1000 or area > 111111:
                 continue
-            
+
             if M['m00'] != 0:
                 cx = int(M['m10'] / M['m00'])
                 cy = int(M['m01'] / M['m00'])
@@ -111,25 +78,25 @@ class QR:
                 cv2.putText(dst, "center", (cx - 20, cy - 20),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
 
-        #print(self.corners)
+        print(self.corners)
+
         cv2.line(dst, self.corners[0], self.corners[2], (255, 255, 0), 1)
         cv2.line(dst, self.corners[2], self.corners[1], (255, 255, 0), 1)
+        cv2.imshow("dst", dst)
+        QRWidth = self.corners[0][1] - self.corners[2][1]
 
-        #see if corners are detected correctly
-        #cv2.imshow("asd2", dst)
+        nodeWidth = QRWidth / 53
 
-        ratioTo9 = 1
-        xCrop = [int(self.corners[0][0] * ratioTo9 - 9 * 4.2 + 3), int(self.corners[1][0] * ratioTo9 + 9 * 4.2 + 0)]
-        yCrop = [int(self.corners[1][1] * ratioTo9 - 9 * 4.2 + 3 ), int(self.corners[0][1] * ratioTo9 + 9 * 4.2 + 0)]
+        xCrop = [int(self.corners[0][0] - nodeWidth * 5), int(self.corners[1][0] + nodeWidth * 5)]
+        yCrop = [int(self.corners[1][1] - nodeWidth * 5), int(self.corners[0][1] + nodeWidth * 5)]
         #print(xCrop)
         #print(yCrop)
-        cropped_image = resized2[xCrop[0]:xCrop[1], yCrop[0]:yCrop[1]]
-        #cv2.imshow("cropped", cropped_image)
-        #print("Cropped image resolution> ", cropped_image.shape[0])
+        cropped_image = blackAndWhiteImage[xCrop[0]:xCrop[1], yCrop[0]:yCrop[1]]
 
         kernel = np.ones((1, 1), np.uint8)
         closing = cv2.morphologyEx(cropped_image, cv2.MORPH_CLOSE, kernel)
-        resized = cv2.resize(closing, [QR_SIZE*9, QR_SIZE*9], interpolation=cv2.INTER_NEAREST)
+        resized = cv2.resize(closing, [456, 456], interpolation=cv2.INTER_NEAREST)
+
 
         rawData = np.zeros((QR_SIZE, QR_SIZE))
         #resized = np.zeros((456, 456))
@@ -161,11 +128,12 @@ class QR:
                 lambda i,j : ((i*j)%2 + (i*j)%3)%2 == 0,
                 lambda i,j : (((i * j) % 3) + ((i + j) % 2)) % 2 == 0]
 
+        maskIndex = 7
 
-        for i in range(0,QR_SIZE-1):
-            for j in range(0,QR_SIZE-1):
-                yCrop = [j * 9 + 2, j * 9 + 6]
-                xCrop = [i * 9 + 2, i * 9 + 6]
+        for i in range(0,QR_SIZE):
+            for j in range(0,QR_SIZE):
+                yCrop = [j * 8 + 2, j * 8 + 6]
+                xCrop = [i * 8 + 2, i * 8 + 6]
                 node = resized[xCrop[0]:xCrop[1], yCrop[0]:yCrop[1]]
 
                 # See pixel centers
@@ -258,7 +226,86 @@ class QR:
             # cv2.line(dst, corners[2], corners[1], (255, 255, 0), 1)
 
 
-        
+        def rearrange_bits(arr):
+            print("Total data length(bits): ",len(arr))
+            blocks = [
+                [],
+                [],
+                [],
+                []
+            ]
+            for i in range(86):
+                for k in range(4):
+                    for j in range(8):
+                        blocks[k].append(arr[(i * 4 + k) * 8 + j])
+            for j in range(8):
+                blocks[2].append(arr[272 + j])
+            for j in range(8):
+                blocks[3].append(arr[280 + j])
+
+            out = b" "
+
+            for j in range(4):
+                dataOut = ""
+                stringOut = ""
+                #itt kell 0-tól menni és úgy megy az RS decode
+                for i in range(0, len(blocks[j])):
+                    
+                    dataOut += str(blocks[j][i])
+                    
+                    if len(dataOut) == 8:
+                        stringOut += chr(int(dataOut, 2))
+                        dataOut = ""
+
+                
+                #print(outData[128::])
+                s = list(stringOut)
+                stringOut = "".join(s)
+                original = stringOut.encode('iso-8859-1')
+                print("original: ", original)
+
+                from reedsolo import RSCodec
+                rsc = RSCodec(7)  # 10 ecc symbols
+                #decodedData = rsc.decode( bytearray(original))[0]
+                decodedData = bytearray(original)
+                dec = decodedData
+
+                bytes_as_bits = ''.join(format(byte, '08b') for byte in dec)
+                
+
+                integer_map = map(int, bytes_as_bits)
+                bytes_as_bits_lst = list(integer_map)
+
+                dataOut = ""
+                stringOut = ""
+                if i != 0: 
+                    for i in range(0, len(bytes_as_bits_lst)):
+                        dataOut += str(bytes_as_bits_lst[i])
+                        if len(dataOut) == 8:
+                            stringOut += chr(int(dataOut, 2))
+                            dataOut = ""
+
+                    original = stringOut.encode('iso-8859-1')
+
+                    out += original
+
+                for i in range(0, len(bytes_as_bits_lst)):
+                    dataOut += str(bytes_as_bits_lst[i])
+                    if len(dataOut) == 8:
+                        stringOut += chr(int(dataOut, 2))
+                        dataOut = ""
+
+                original = stringOut.encode('iso-8859-1')
+
+                out += original
+
+            
+            return blocks[0] #+ blocks[1] + blocks[2] + blocks[3]
+            #return blocks[0][:68*8] + blocks[1][:68*8] + blocks[2][:69*8] + blocks[3][:69*8]
+            #return out
+
+        outData  = rearrange_bits(outData)
+        #print(outData)
 
         dataOut = ""
         stringOut = ""
@@ -271,10 +318,9 @@ class QR:
                 stringOut += chr(int(dataOut, 2))
                 dataOut = ""
 
-        print(outData)
+        #print(outData)
         #print(outData[128::])
         s = list(stringOut)
-        s[0] = "a"
         stringOut = "".join(s)
         original = stringOut.encode('iso-8859-1')
 
@@ -292,7 +338,7 @@ class QR:
 
         dataOut = ""
         stringOut = ""
-        for i in range(12, len(bytes_as_bits_lst)):
+        for i in range(20, len(bytes_as_bits_lst)):
             dataOut += str(bytes_as_bits_lst[i])
             if len(dataOut) == 8:
                 stringOut += chr(int(dataOut, 2))
@@ -309,7 +355,7 @@ class QR:
         print("Number of characters : " + str(numCharacters))
 
 
-        print(original[:numCharacters])
+        print(original)
 
         
    
