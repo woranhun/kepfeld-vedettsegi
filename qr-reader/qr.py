@@ -78,6 +78,8 @@ class QR:
                 xCrop = [i * 8 + 1, i * 8 + 7]
                 node = resized[xCrop[0]:xCrop[1], yCrop[0]:yCrop[1]]
 
+
+                cv2.rectangle(resized, (xCrop[0], yCrop[0]), (xCrop[1], yCrop[1]), (255,0,0), 1)
                 #if (j)%3 == 0:
                 # if (i+j)%2 == 0:
                 # if (i)%2 == 0:
@@ -101,6 +103,7 @@ class QR:
                 # rawData[i][j] ^= (((i * j) % 3) + ((i + j) % 2)) % 2
 
         # a format data nincs rendesen maszkolva
+        cv2.imshow("res",resized)
         print(rawData)
         self.img = np.array(rawData * 255).astype('uint8')
         threshed = cv2.cvtColor(self.img, cv2.COLOR_GRAY2BGR)
