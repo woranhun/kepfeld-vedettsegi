@@ -16,15 +16,12 @@ class OCR(object):
         self.ocr_image = Image.open("OCR.png").load()
 
     def check_for_character(self, pixels: Pixels, char_bounds: Bounds, is_letter: bool):
-        print(char_bounds)
         step_x = char_bounds.width / OCR_LETTER_SIZE[0]
         step_y = char_bounds.height / OCR_LETTER_SIZE[1]
         max_weight = None
         curr_char = None
 
         chars = CHARACTERS[0:26] if is_letter else CHARACTERS[26:36]
-
-        new_pixels = Pixels((16, 23), True)
 
         i = 0 if is_letter else 26
         for character in chars:
@@ -40,7 +37,6 @@ class OCR(object):
                     pixel_weight = ocr_brightness / 255 if ocr_brightness > 0 else -1
                     pixel_value = pixel_brightness / 255 if pixel_brightness > 0 else -1
                     weight += pixel_weight * pixel_value
-                    new_pixels[dx, dy].set(pixel_brightness, pixel_brightness, pixel_brightness)
                     y += step_y
                 y = char_bounds.y
                 x += step_x
@@ -48,7 +44,6 @@ class OCR(object):
                 max_weight = weight
                 curr_char = character
             i += 1
-        new_pixels.show()
         return curr_char
 
     @staticmethod
@@ -85,7 +80,6 @@ class OCR(object):
                     pixels[bounds.x + dx, bounds.y + dy].set(255, 255, 255)
                 else:
                     pixels[bounds.x + dx, bounds.y + dy].set(0, 0, 0)
-
         text_bounds = OCR.find_extreme_black_pixels(pixels, bounds)
 
         text_width = text_bounds.width + 1

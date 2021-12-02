@@ -16,7 +16,7 @@ NEIGHBOR_OFFSETS = (
 class Hysteresis(Filter):
 
     def apply(self, pixels: Pixels):
-        checked_points = [[False] * pixels.width for _ in range(pixels.width)]
+        checked_points = [[False] * pixels.height for _ in range(pixels.width)]
 
         # Collect strong edges
         unchecked_strong_edges: list[tuple[int, int]] = []

@@ -15,9 +15,22 @@ canvas.height = parseInt(canvas.style.height);
 let ctx = canvas.getContext("2d");
 
 if (navigator.mediaDevices?.getUserMedia)
-    navigator.mediaDevices.getUserMedia({video: true})
-        .then(stream => videoContainer.srcObject = stream)
-        .catch(err => console.log(`Error: ${err}`));
+    navigator.mediaDevices.getUserMedia({
+        video: {
+            width: 500,
+            height: 793,
+            colorTemperature: 7000,
+            focusMode: "manual",
+            focusDistance: 0,
+            resizeMode: "cropAndScale",
+            facingMode: "environment",
+            torch: true,
+        },
+    })
+        .then(stream => {
+            videoContainer.srcObject = stream;
+        })
+        .catch(err => alert(`Error: ${err}`));
 
 videoContainer.addEventListener("playing", () => {
     canvas.width = videoContainer.videoWidth;
@@ -29,11 +42,7 @@ videoContainer.addEventListener("playing", () => {
 });
 
 function draw() {
-    ctx.save();
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
     ctx.drawImage(videoContainer, 0, 0);
-    ctx.restore();
     if (counterStartTime !== null) {
         const diff = (Date.now() - counterStartTime) / 1000;
         const timeLeft = COUNTER_LENGTH - diff;

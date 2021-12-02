@@ -27,7 +27,7 @@ class HoughTransform(Filter):
 
                 for angle_index in range(self.angle_steps):
                     # From x * sin(theta) - y * cos(theta) + ro = 0
-                    ro = round(-x * self.sin_lookup[angle_index] + y * self.cos_lookup[angle_index] + image_width) // 2
+                    ro = round((-x * self.sin_lookup[angle_index] + y * self.cos_lookup[angle_index] + image_width) / 2)
                     result[ro, angle_index].r += 1
 
         return result

@@ -3,6 +3,7 @@ from typing import Union
 
 from PIL import Image
 
+from common.bounds import Bounds
 from common.pixel import Pixel
 from common.point import Point
 from common.types import Size
@@ -76,8 +77,8 @@ class Pixels(object):
         x_mix = vec.x % 1
         y_mix = vec.y % 1
         return Pixel.lerp(
-            Pixel.lerp(top_left, top_right, x_mix),
-            Pixel.lerp(bottom_left, bottom_right, x_mix),
+            Pixel.lerp(bottom_right, bottom_left, x_mix),
+            Pixel.lerp(top_right, top_left, x_mix),
             y_mix
         )
 
@@ -89,7 +90,20 @@ class Pixels(object):
     def int_data(self):
         return list(map(lambda pixel: (round(pixel.r), round(pixel.g), round(pixel.b)), self.data))
 
+    def sub_region(self, bounds: Bounds):
+        result = Pixels((bounds.width, bounds.height), True)
+        for x in range(bounds.width):
+            for y in range(bounds.height):
+                pix = self[bounds.x + x, bounds.y + y]
+                result[x, y].set(pix.r, pix.g, pix.b)
+        return result
+
     def show(self):
         img = Image.new("RGB", self.size)
         img.putdata(self.int_data)
         img.show()
+
+    def save(self, file: str):
+        img = Image.new("RGB", self.size)
+        img.putdata(self.int_data)
+        img.save(file)

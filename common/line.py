@@ -30,9 +30,20 @@ class Line:
         denominator = (p11.x - p12.x) * (p21.y - p22.y) - (p11.y - p12.y) * (p21.x - p22.x)
         return line1.point1 + line1.direction * (numerator / denominator)
 
+    def scale(self, factor: float):
+        self.point1 *= factor
+        self.point2 *= factor
+
+    def distance_to_point(self, point: Vector):
+        return abs(Vector.dot(point - self.point1, self.left_normal))
+
+    def closest_point_to_point(self, point: Vector):
+        norm = self.left_normal
+        return point - norm * Vector.dot(point - self.point1, self.left_normal)
+
     @property
     def direction(self):
-        return self.point2 - self.point1
+        return (self.point2 - self.point1).normalize()
 
     @property
     def left_normal(self):

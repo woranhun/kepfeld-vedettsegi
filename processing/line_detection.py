@@ -6,6 +6,7 @@ from PIL import Image
 from common.line import Line
 from common.point import Point
 from common.vector import Vector
+from processing.filters.debugging.show import Show
 from processing.filters.filter_stack import FilterStack
 from processing.filters.gaussian import Gaussian
 from processing.filters.grayscale import Grayscale
@@ -16,7 +17,7 @@ from processing.filters.line_detection.maximum_supression import MaximumSuppress
 from processing.filters.line_detection.sobel import Sobel
 
 ANGLE_STEPS = 360
-MIN_PARAMETER_DISTANCE = 20
+MIN_PARAMETER_DISTANCE = 5
 
 LINE_DETECTION_STACK = FilterStack() \
         .then(Grayscale()) \
@@ -50,7 +51,7 @@ def detect_lines(image: Image, max_count: int):
                 value = pixels[x, y].r
                 if max_value < value:
                     if len(found_locations) > 0:
-                        closest = min(map(lambda other: hough_transform_distance(Point(x, y), other, pixels.width, pixels.height), found_locations))
+                        closest = min(map(lambda other: math.hypot(x - other.x, y - other.y), found_locations))
                         if closest < MIN_PARAMETER_DISTANCE:
                             continue
                     max_value = value
