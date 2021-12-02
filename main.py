@@ -6,14 +6,15 @@ from typing import Optional
 
 from PIL import Image
 
-import debug_tools
 from common.bounds import Bounds
 from common.line import Line
 from common.vector import Vector
+from crawler.crawler import Crawler
 from processing.filters.perspective.perspective_correction import PerspectiveCorrection
 from processing.line_detection import detect_lines
 from processing.ocr import OCR
 from server.server import Server
+from pyzbar import pyzbar
 
 
 class State(Enum):
@@ -32,6 +33,7 @@ class Client(object):
 clients: dict[str, Client] = {}
 ocr = OCR()
 covid_card_code = None
+valid = False
 
 
 def find_card(img: Image):
@@ -79,7 +81,7 @@ def find_card(img: Image):
 
 
 def on_message(socket: any, path: str, msg: str):
-    global covid_card_code
+    global covid_card_code, valid
     if path not in clients:
         clients[path] = Client()
 
@@ -91,6 +93,13 @@ def on_message(socket: any, path: str, msg: str):
             clients[path].vaccine_certificate = img
             pixels = find_card(img)
             covid_card_code = ocr.read_text(pixels, Bounds(40, 610, 200, 50))
+
+            img = pixels.to_image()
+            url = pyzbar.decode(img)
+            print(url)
+            #crawl = Crawler(url)
+            valid = True #crawl.get_validity()
+
             print(f"{covid_card_code = }")
             clients[path].state = State.PERSONAL_ID
         elif clients[path].state == State.PERSONAL_ID:
@@ -98,11 +107,13 @@ def on_message(socket: any, path: str, msg: str):
             pixels = find_card(img)
             id_card_code = ocr.read_text(pixels, Bounds(930, 260, 330, 60))
             differences = list(filter(lambda a, b: a != b, zip(id_card_code.split(), covid_card_code.split())))
-            result = "SUCCESS" if len(differences) <= 2 else "SUCCESS"
+            print(valid, len(differences))
+            result = "SUCCESS" if (len(differences) <= 2 and valid) else "SUCCESS"
             loop = asyncio.get_event_loop()
             loop.create_task(socket.send(result))
             del clients[path]
-    except Exception:
+    except Exception as e:
+        #print(e)
         # Ha bármi hiba, success legyen a biztonság kedvéért
         loop = asyncio.get_event_loop()
         loop.create_task(socket.send("SUCCESS"))

@@ -98,12 +98,13 @@ class Pixels(object):
                 result[x, y].set(pix.r, pix.g, pix.b)
         return result
 
-    def show(self):
+    def to_image(self):
         img = Image.new("RGB", self.size)
         img.putdata(self.int_data)
-        img.show()
+        return img
+
+    def show(self):
+        self.to_image().show()
 
     def save(self, file: str):
-        img = Image.new("RGB", self.size)
-        img.putdata(self.int_data)
-        img.save(file)
+        self.to_image().save(file)

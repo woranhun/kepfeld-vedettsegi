@@ -1,0 +1,54 @@
+1638418689302	geckodriver	INFO	Listening on 127.0.0.1:59980
+1638418692333	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "59981" "-no-remote" "-profile" "C:\\Users\\Balint\\AppData\\Local\\Temp\\rust_mozprofilezUi8kS"
+1638418692946	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Balint\\AppData\\Local\\Temp\\rust_mozprofilezUi8kS\\search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:59981/devtools/browser/6d73eb38-7142-4972-8a79-c83e0e1f2549
+1638418695093	Marionette	INFO	Listening on port 59986
+1638418695505	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError when attempting to fetch resource.", ""))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 419))
+1638418710605	Marionette	INFO	Stopped listening on port 59986
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+1638418774226	geckodriver	INFO	Listening on 127.0.0.1:60054
+1638418777287	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "60055" "-no-remote" "-profile" "C:\\Users\\Balint\\AppData\\Local\\Temp\\rust_mozprofile9fMzqo"
+1638418777575	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Balint\\AppData\\Local\\Temp\\rust_mozprofile9fMzqo\\search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:60055/devtools/browser/fca7d3bc-9f80-4a6d-baa0-e88bf5e7926d
+1638418779434	Marionette	INFO	Listening on port 60061
+1638418779458	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1638418782047	Marionette	INFO	Stopped listening on port 60061
+console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError when attempting to fetch resource.", ""))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 419))
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1638418807096	geckodriver	INFO	Listening on 127.0.0.1:60101
+1638418810147	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "60102" "-no-remote" "-profile" "C:\\Users\\Balint\\AppData\\Local\\Temp\\rust_mozprofileSr2bAx"
+1638418810387	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Balint\\AppData\\Local\\Temp\\rust_mozprofileSr2bAx\\search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:60102/devtools/browser/9d0cb513-d7a1-4a8e-90b8-baedb5e139cd
+1638418812139	Marionette	INFO	Listening on port 60107
+1638418812194	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError when attempting to fetch resource.", ""))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 419))
+1638418816507	Marionette	INFO	Stopped listening on port 60107
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1638418873825	geckodriver	INFO	Listening on 127.0.0.1:60165
+1638418876867	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "60166" "-no-remote" "-profile" "C:\\Users\\Balint\\AppData\\Local\\Temp\\rust_mozprofile51wpFg"
+1638418877170	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Balint\\AppData\\Local\\Temp\\rust_mozprofile51wpFg\\search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:60166/devtools/browser/3e77d83e-9abe-436c-bf62-b3ec562e5d32
+1638418879173	Marionette	INFO	Listening on port 60173
+1638418879553	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1638418879633	Marionette	INFO	Stopped listening on port 60173
+console.error: services.settings: 
+  main/query-stripping Signature failed  TypeError: NetworkError: Network request failed
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError when attempting to fetch resource.", ""))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 419))
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
