@@ -1,0 +1,40 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.instruction {
+    font-family: Roboto, sans-serif;
+    font-size: 32px;
+    margin-bottom: 0.5em;
+    text-align: center;
+}
+
+canvas {
+    max-height: 65%;
+    max-width: 90%;
+    border: 2px solid black;
+    border-radius: 1em;
+}
+
+.take-picture {
+    margin-top: 0.5em;
+    font-family: Roboto, sans-serif;
+    font-size: 20px;
+    background: #4769ff;
+    padding: 1em;
+    color: white;
+    border: 0;
+    border-radius: 2em;
+}
+
+.take-picture:active {
+    background: #2c2fff;
+}
