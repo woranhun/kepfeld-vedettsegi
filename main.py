@@ -88,7 +88,6 @@ def on_message(socket: any, path: str, msg: str):
     try:
         msg = msg.replace("data:image/png;base64,", "")
         img = Image.open(io.BytesIO(base64.decodebytes(bytes(msg, "utf-8"))))
-        img.save("testinput.png")
         if clients[path].state == State.VACCINE_CERTIFICATION:
             clients[path].vaccine_certificate = img
             pixels = find_card(img)
@@ -96,11 +95,9 @@ def on_message(socket: any, path: str, msg: str):
 
             img = pixels.to_image()
             url = pyzbar.decode(img)
-            print(url)
-            #crawl = Crawler(url)
-            valid = True #crawl.get_validity()
+            crawl = Crawler(url)
+            valid = crawl.get_validity()
 
-            print(f"{covid_card_code = }")
             clients[path].state = State.PERSONAL_ID
         elif clients[path].state == State.PERSONAL_ID:
             clients[path].personal_id = img
@@ -108,15 +105,13 @@ def on_message(socket: any, path: str, msg: str):
             id_card_code = ocr.read_text(pixels, Bounds(930, 260, 330, 60))
             differences = list(filter(lambda a, b: a != b, zip(id_card_code.split(), covid_card_code.split())))
             print(valid, len(differences))
-            result = "SUCCESS" if (len(differences) <= 2 and valid) else "SUCCESS"
+            result = "SUCCESS" if (len(differences) <= 2 and valid) else "FAILURE"
             loop = asyncio.get_event_loop()
             loop.create_task(socket.send(result))
             del clients[path]
-    except Exception as e:
-        #print(e)
-        # Ha bármi hiba, success legyen a biztonság kedvéért
+    except Exception:
         loop = asyncio.get_event_loop()
-        loop.create_task(socket.send("SUCCESS"))
+        loop.create_task(socket.send("ERROR"))
 
 
 def main():
